@@ -12,13 +12,10 @@ def inq():
     tk.messagebox.showinfo(title="select UAS file out", message="select UAS checked file location")
     outpath = filedialog.askdirectory()
 
-    tk.messagebox.showinfo(title="select barcode list after check", message="select  barcode list after check")
-    blist = filedialog.askopenfilename()
-
     tk.messagebox.showinfo(title=" UAS file", message="select UAS list")
     UAS = filedialog.askdirectory()
 
-    return UAS,outpath, outname,blist,bcheck                                           
+    return UAS,outpath, outname,bcheck                                           
 
 """here the code checked the trimed sequences for UAS. """
 def UAScheck(bchecked,UAS,length,uer,ler):
@@ -34,7 +31,6 @@ def UAScheck(bchecked,UAS,length,uer,ler):
     reader = UAS
     row = len(reader)
     for item in bchecked:
-        counter = 0
         seq = item['seqeunce']
         ulist = list()
         lisstt = list()
@@ -105,7 +101,7 @@ def UAScheck(bchecked,UAS,length,uer,ler):
     return uchecked,explist
 
 """Here it will read the CSV files and return a list"""
-def read(UAS,blist,bcheck):
+def read(UAS,bcheck):
     with open(bcheck, 'r') as f:
         bchecked = list(csv.DictReader(f,delimiter=';', quotechar='"'))
     with open(UAS, 'r') as f:
@@ -115,12 +111,8 @@ def read(UAS,blist,bcheck):
     """WO barcode"""
     """With barcode"""
     length = [83,116]
-    with open(blist, 'r') as f:
-        blistt = list(csv.DictReader(f,delimiter=';', quotechar='"'))
-        blisttt = dict()
-        for i in blistt:
-            blisttt[int(i['barcode number'])]= 0
-    return uaslist,length,blisttt,bchecked
+
+    return uaslist,length,bchecked
 
 """checking the lengh of the seq and report the number of UAS prediction"""
 def nuas(seq):
@@ -136,42 +128,29 @@ def nuas(seq):
     else:
         return None 
     
-"""start the time"""
-t0 = time.time()
  
 """this seqction is for loading the data:
-l[0] = forward primer
-l[1] = reverse primer 
-l[2] = the sequencing file
-l[3] = the barcode file 
-l[4] = the UAS list file
-
-s = the number of sequences to analyze
+l[0] = List of UAS names with their corresponding sequence
+l[1] = Output path
+l[2] = Output name handle
+l[3] = list of checked sequences with their barcodes
 
 readlist read csv files and return list
-readlist[0] = barcode list
-readlist[1] = UAS list
-readlist[2] = barcode expression list
+readlist[0] = UAS list
+readlist[1] = Expected length for the fragement with No UAS and length of each UAS element
+readlist[2] = List of barcode checked sequences
 """
 l = inq()
 
 
 """this section is for program parameters:
-s = numebr of sequence reads
-per = primer anealing error
-ber = barcode anealing error
 uer = UAS anealing error
-bl = barcode length
 ler = final length error"""
-s = 100
-per = 5
-ber = 5
 uer = 15
-bl = 10
 ler = 20
 
 """a function to read csv list of UAS and barcode"""
-readlist = read(l[0],l[3],l[4])
+readlist = read(l[0],l[3])
 
 """a function to exprt the reports of UAS order expression and sequences into CSV file"""
 def out(ucheckedl,UASinbin,outname,out):
@@ -192,21 +171,16 @@ def out(ucheckedl,UASinbin,outname,out):
 """this section is for actions:
 pchecked = checks the primer bindign
 bchecked = checks the barcode and trim the barcode and primer sequence
-uandxchecked = it aligns the sequence with UAS elements and check homany time one order is repeated in which bin
+uandxchecked = it aligns the sequence with UAS elements and check how many time one order is repeated in which bin
 experssion = it will find the average expression of on UAS order from all the bins it was in. so retrun order,expression,total read
 """
 pchecked = list() 
-#pcheck = SeqIO.parse("/Users/alitafazoliyazdi/Desktop/python/python scripts/git/UASnanoporeanalyze/plasmid and primers/17-6-23/pchecked.faa","fasta")
 
 xcheckedt = list()
 ucheckedt = list()
-bchecked = readlist[3]
+bchecked = readlist[2]
 uandxchecked = UAScheck(bchecked,readlist[0],readlist[1],uer,ler)
 uchecked = uandxchecked[0]
 xchecked = uandxchecked[1]
 outname = str('3X')
 out(uchecked,xchecked,outname,l[1])
-"""finish time"""
-t1 = time.time()
-total = round(t1-t0)
-print('time is %i' %total)
