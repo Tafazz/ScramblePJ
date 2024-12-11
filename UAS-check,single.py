@@ -106,10 +106,8 @@ def read(UAS,bcheck):
         bchecked = list(csv.DictReader(f,delimiter=';', quotechar='"'))
     with open(UAS, 'r') as f:
         uaslist = list(csv.DictReader(f,delimiter=';', quotechar='"'))
-    """length of UAS combinations from 1 to 5"""
+    """length of expected empty fragemnt and UAS element"""
     length = list()
-    """WO barcode"""
-    """With barcode"""
     length = [83,116]
 
     return uaslist,length,bchecked
@@ -130,16 +128,11 @@ def nuas(seq):
     
  
 """this seqction is for loading the data:
-l[0] = List of UAS names with their corresponding sequence
+l[0] = UAS names with their corresponding sequence
 l[1] = Output path
 l[2] = Output name handle
-l[3] = list of checked sequences with their barcodes
+l[3] = Checked sequences with their barcodes"""
 
-readlist read csv files and return list
-readlist[0] = UAS list
-readlist[1] = Expected length for the fragement with No UAS and length of each UAS element
-readlist[2] = List of barcode checked sequences
-"""
 l = inq()
 
 
@@ -149,7 +142,11 @@ ler = final length error"""
 uer = 15
 ler = 20
 
-"""a function to read csv list of UAS and barcode"""
+"""readlist read csv files and return lists
+readlist[0] = UAS list
+readlist[1] = Expected length for the fragement with No UAS and length of each UAS element
+readlist[2] = List of barcode checked sequences
+"""
 readlist = read(l[0],l[3])
 
 """a function to exprt the reports of UAS order expression and sequences into CSV file"""
@@ -175,7 +172,6 @@ uandxchecked = it aligns the sequence with UAS elements and check how many time 
 experssion = it will find the average expression of on UAS order from all the bins it was in. so retrun order,expression,total read
 """
 pchecked = list() 
-
 xcheckedt = list()
 ucheckedt = list()
 bchecked = readlist[2]
