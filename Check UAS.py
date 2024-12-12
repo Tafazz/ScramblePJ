@@ -1,5 +1,4 @@
-from Bio import SeqIO, Align
-import time
+from Bio import Align
 import tkinter as tk
 import csv
 from tkinter import filedialog
@@ -72,7 +71,7 @@ def UAScheck(bchecked,UAS,length,uer,ler):
                 """in here a list is taken from ucheck and it will find all the UAS combinations 
                 , then for each combination it will count how many is recorderd for each barcode"""
                 o = 0
-                yy = int(item["expression"])
+                yy = int(item["barcode number"])
                 for t in explist:
                     o = 0
                     if t[0] == lisstt:
@@ -81,14 +80,13 @@ def UAScheck(bchecked,UAS,length,uer,ler):
                             t[1][yy] += 1
                         else:
                             t[1][yy] = 1
-
                         break
                 if o == 0:
                     a = dict()
                     a[yy] = 1
                     explist.append([lisstt,a])
 
-    """here I check the bin data and delete empty bins"""
+    """here I check the barcode data and delete empty barcodes"""
     popl = list()
     for rec in explist:
         popl = []
@@ -97,7 +95,7 @@ def UAScheck(bchecked,UAS,length,uer,ler):
                 popl.append(key)
         for ii in popl:
             rec[1].pop(ii)
-    print ('number of U checked is %i' %count)
+    print ('number of UAS checked sequence is %i' %count)
     return uchecked,explist
 
 """Here it will read the CSV files and return a list"""
@@ -132,9 +130,7 @@ l[0] = UAS names with their corresponding sequence
 l[1] = Output path
 l[2] = Output name handle
 l[3] = Checked sequences with their barcodes"""
-
 l = inq()
-
 
 """this section is for program parameters:
 uer = UAS anealing error
@@ -149,19 +145,19 @@ readlist[2] = List of barcode checked sequences
 """
 readlist = read(l[0],l[3])
 
-"""a function to exprt the reports of UAS order expression and sequences into CSV file"""
-def out(ucheckedl,UASinbin,outname,out):
-    with open('%s/%s_UASinbin.csv'%(out,outname), 'w',newline='') as csvfile:
-        filewriter = csv.DictWriter(csvfile, fieldnames=['order', 'bin distribution'],delimiter=';')
+"""a function to exprt the reports of UAS order and sequences into CSV file"""
+def out(ucheckedl,UASinbarc,outname,out):
+    with open('%s/%s_UASinbarc.csv'%(out,outname), 'w',newline='') as csvfile:
+        filewriter = csv.DictWriter(csvfile, fieldnames=['order', 'barcode distribution'],delimiter=';')
         filewriter.writeheader()
-        for k in UASinbin:
-            filewriter.writerow({'order':k[0],'bin distribution':k[1]})
+        for k in UASinbarc:
+            filewriter.writerow({'order':k[0],'barcode distribution':k[1]})
 
     with open('%s/%s_UASSEQchecked.csv'%(out,outname), 'w',newline='') as csvfile:
-        filewriter = csv.DictWriter(csvfile, fieldnames=['seqeunce','length','barcode number','expression','UAS order'],delimiter=';')
+        filewriter = csv.DictWriter(csvfile, fieldnames=['seqeunce','length','barcode number','UAS order'],delimiter=';')
         filewriter.writeheader()
         for i in ucheckedl:
-            filewriter.writerow({'seqeunce':i['seqeunce'],'length':i['length'],'barcode number':i['barcode number'],'expression':i['expression'],'UAS order':i['UAS order']})
+            filewriter.writerow({'seqeunce':i['seqeunce'],'length':i['length'],'barcode number':i['barcode number'],'UAS order':i['UAS order']})
     csvfile.close()
 
 
@@ -169,7 +165,6 @@ def out(ucheckedl,UASinbin,outname,out):
 pchecked = checks the primer bindign
 bchecked = checks the barcode and trim the barcode and primer sequence
 uandxchecked = it aligns the sequence with UAS elements and check how many time one order is repeated in which bin
-experssion = it will find the average expression of on UAS order from all the bins it was in. so retrun order,expression,total read
 """
 pchecked = list() 
 xcheckedt = list()
@@ -178,5 +173,5 @@ bchecked = readlist[2]
 uandxchecked = UAScheck(bchecked,readlist[0],readlist[1],uer,ler)
 uchecked = uandxchecked[0]
 xchecked = uandxchecked[1]
-outname = str('3X')
+outname = str('5X')
 out(uchecked,xchecked,outname,l[1])

@@ -1,5 +1,4 @@
 from Bio import SeqIO, Align
-import time
 import tkinter as tk
 from tkinter import filedialog
 import csv
@@ -72,9 +71,7 @@ def bcheck(seq,barcode,outname,outpath):
                 bcheck.letter_annotations = {}
                 bcheck.seq = seq_record.seq[rr:rrr]
                 b = int(reader[i]['num'])
-                c = int (reader[i]['expression'])
                 bcheck.annotations["barcode number"]= b
-                bcheck.annotations["expression"] = c
                 bcheck.annotations["length"] = "%i bp"%(len(bcheck.seq))
 
                 if len(bcheck.seq)> 0:
@@ -102,7 +99,7 @@ def bcheck(seq,barcode,outname,outpath):
 def read(barcode):
     with open(barcode, 'r') as f:
         barclist = list(csv.DictReader(f,delimiter=';', quotechar='"'))
-    """the first number is the length of an empty cassette and the second is the lengthof each UAS"""
+    """the first number is the length of an empty cassette after PCR amlification and the second is the length of each UAS"""
     length = [83,116]
     return barclist,length
 
@@ -120,33 +117,12 @@ def nuas(seq):
     else:
         return None
 
-"""this seqction is for loading the data:
-l[0] = forward primer
-l[1] = reverse primer 
-l[2] = the sequencing file
-l[3] = the barcode file 
-l[4] = the UAS list file
-s = the number of sequences to analyze
-readlist read csv files and return list
-readlist[0] = barcode list
-readlist[1] = UAS list
-readlist[2] = barcode expression list
-"""
-l = inq()
-outpath = l[2]
-
-"""uer = UAS anealing error"""
-uer = 15
-
-"""a function to read csv list of UAS and barcode"""
-readlist = read(l[1])
-
 def out(nuasl,blist,out,bchecked,outname):
     with open('%s/%s.csv'%(out,outname), 'w',newline='') as csvfile:
-        filewriter = csv.DictWriter(csvfile, fieldnames=['seqeunce','length','barcode number','expression'],delimiter=';')
+        filewriter = csv.DictWriter(csvfile, fieldnames=['seqeunce','length','barcode number'],delimiter=';')
         filewriter.writeheader()
         for i in bchecked:
-            filewriter.writerow({'seqeunce':i.seq,'length':i.annotations["length"],'barcode number':i.annotations["barcode number"],'expression':i.annotations["expression"]})
+            filewriter.writerow({'seqeunce':i.seq,'length':i.annotations["length"],'barcode number':i.annotations["barcode number"]})
     with open('%s/TOTAL LIBRARY LENGTH.csv'%out, 'w',newline='') as csvfile:
         filewriter = csv.DictWriter(csvfile, fieldnames=['number of UAS', 'Number of reads with the same length'],delimiter=';')
         filewriter.writeheader()
@@ -159,12 +135,29 @@ def out(nuasl,blist,out,bchecked,outname):
             filewriter.writerow({'barcode number':i})
     csvfile.close()
 
+
+"""this seqction is for loading the data:
+l[0] = Sequencing file
+l[1] = the barcode file
+l[2] = the directory to save the output"""""
+l = inq()
+outpath = l[2]
+
+""""readlist read csv files and return list
+readlist[0] = barcode list
+readlist[1] = defult DNA fragemnt lentgh information
+"""
+readlist = read(l[1])
+
 """this section is for actions:
 pchecked = checks the primer bindign
 bchecked = checks the barcode and trim the barcode and primer sequence
 out =  export the result
 """
+
+"""uer = UAS anealing error"""
+uer = 15
 pchecked = list() 
-outname = str('3X.bchecked')
+outname = str('5X.bchecked')
 bchecked = bcheck(l[0],readlist[0],outname,outpath)
 out(bchecked[0],bchecked[1],l[2],bchecked[2],outname)
