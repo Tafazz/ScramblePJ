@@ -146,13 +146,7 @@ readlist[2] = List of barcode checked sequences
 readlist = read(l[0],l[2])
 
 """a function to exprt the reports of UAS order and sequences into CSV file"""
-def out(ucheckedl,UASinbarc,outname,out):
-    with open('%s/%s_UASinbarc.csv'%(out,outname), 'w',newline='') as csvfile:
-        filewriter = csv.DictWriter(csvfile, fieldnames=['order', 'barcode distribution'],delimiter=';')
-        filewriter.writeheader()
-        for k in UASinbarc:
-            filewriter.writerow({'order':k[0],'barcode distribution':k[1]})
-
+def out(ucheckedl,outname,out):
     with open('%s/%s_UASSEQchecked.csv'%(out,outname), 'w',newline='') as csvfile:
         filewriter = csv.DictWriter(csvfile, fieldnames=['seqeunce','length','barcode number','UAS order'],delimiter=';')
         filewriter.writeheader()
@@ -172,6 +166,5 @@ ucheckedt = list()
 bchecked = readlist[2]
 uandxchecked = UAScheck(bchecked,readlist[0],readlist[1],uer,ler)
 uchecked = uandxchecked[0]
-xchecked = uandxchecked[1]
 outname = str('5X')
-out(uchecked,xchecked,outname,l[1])
+out(uchecked,outname,l[1])
