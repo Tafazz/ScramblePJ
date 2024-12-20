@@ -15,7 +15,7 @@ def inq():
     tk.messagebox.showinfo(title="select barcode file", message="select barcode file")
     bc = filedialog.askopenfilename()
 
-    tk.messagebox.showinfo(title="select barcode file out", message="select barcode file location")
+    tk.messagebox.showinfo(title="select output", message="select output location")
     out = filedialog.askdirectory()
 
     return  seq,bc,out
@@ -88,7 +88,7 @@ def bcheck(seq,barcode,outname,outpath):
         if check == 0:
             countf += 1
 
-    SeqIO.write(bchecked, "%s/%s.faa"%(outpath,outname), "fasta")
+    #SeqIO.write(bchecked, "%s/%s.faa"%(outpath,outname), "fasta")
     print ('number of reads is %i' %count0)
     print ('number of barcode checked is %i' %count)
     print ('number of failed reads is %i' %countf)
@@ -117,22 +117,12 @@ def nuas(seq):
     else:
         return None
 
-def out(nuasl,blist,out,bchecked,outname):
+def out(out,bchecked,outname):
     with open('%s/%s.csv'%(out,outname), 'w',newline='') as csvfile:
         filewriter = csv.DictWriter(csvfile, fieldnames=['seqeunce','length','barcode number'],delimiter=';')
         filewriter.writeheader()
         for i in bchecked:
             filewriter.writerow({'seqeunce':i.seq,'length':i.annotations["length"],'barcode number':i.annotations["barcode number"]})
-    with open('%s/TOTAL LIBRARY LENGTH.csv'%out, 'w',newline='') as csvfile:
-        filewriter = csv.DictWriter(csvfile, fieldnames=['number of UAS', 'Number of reads with the same length'],delimiter=';')
-        filewriter.writeheader()
-        for i in nuasl:
-            filewriter.writerow({'number of UAS':i,'Number of reads with the same length':nuasl[i]})
-    with open('%s/barcode list after check'%out, 'w',newline='') as csvfile:
-        filewriter = csv.DictWriter(csvfile, fieldnames=['barcode number'],delimiter=';')
-        filewriter.writeheader()
-        for i in blist:
-            filewriter.writerow({'barcode number':i})
     csvfile.close()
 
 
@@ -160,4 +150,4 @@ uer = 15
 pchecked = list() 
 outname = str('5X.bchecked')
 bchecked = bcheck(l[0],readlist[0],outname,outpath)
-out(bchecked[0],bchecked[1],l[2],bchecked[2],outname)
+out(l[2],bchecked[2],outname)

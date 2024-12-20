@@ -9,7 +9,7 @@ def inq():
     exfile = filedialog.askopenfilenames()
     exfile = list(exfile)
 
-    tk.messagebox.showinfo(title="select UAS file out", message="select UAS checked file location")
+    tk.messagebox.showinfo(title="select output", message="select output location")
     outpath = filedialog.askdirectory()
 
     return  exfile,outpath

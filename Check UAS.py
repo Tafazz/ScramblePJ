@@ -8,13 +8,13 @@ def inq():
     tk.messagebox.showinfo(title="select barcode checked file", message="select barcode checked file")
     bcheck = filedialog.askopenfilename()
     
-    tk.messagebox.showinfo(title="select UAS file out", message="select UAS checked file location")
+    tk.messagebox.showinfo(title="select output", message="select output location")
     outpath = filedialog.askdirectory()
 
     tk.messagebox.showinfo(title=" UAS file", message="select UAS list")
-    UAS = filedialog.askdirectory()
+    UAS = filedialog.askopenfilename()
 
-    return UAS,outpath, outname,bcheck                                           
+    return UAS,outpath,bcheck                                           
 
 """here the code checked the trimed sequences for UAS. """
 def UAScheck(bchecked,UAS,length,uer,ler):
@@ -143,7 +143,7 @@ readlist[0] = UAS list
 readlist[1] = Expected length for the fragement with No UAS and length of each UAS element
 readlist[2] = List of barcode checked sequences
 """
-readlist = read(l[0],l[3])
+readlist = read(l[0],l[2])
 
 """a function to exprt the reports of UAS order and sequences into CSV file"""
 def out(ucheckedl,UASinbarc,outname,out):
