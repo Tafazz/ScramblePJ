@@ -2,7 +2,7 @@
 This project processes raw sequencing results from Nanopore sequencing to report the variety of recombinations present in the sample. The process is carried out using three programs in the following order:
 
 1- Check the barcode:
-Since multiple samples are loaded onto a single flow cell, the first step is to separate and assign each sequence to its respective origin. This program checks each sequence and aligns it to the provided barcode sequences (barcode.csv). Each barcode represents a unique sample. The output of this program is a list of all sequences along with their corresponding barcodes
+Since multiple samples are loaded onto a single flow cell, the first step is to separate and assign each sequence to its respective origin. This program checks each sequence and aligns it to the provided barcode sequences (barcode.csv). Each barcode represents a unique sample. The output of this program is a list of all sequences along with their corresponding barcodes. The barcodes for the scramble test is named barcode_Scramble and the barcodes for the 100 generation stabilty test named barcode_beta_PULSE.
 
 2- Check UAS
 This program identifies all UAS (Upstream Activating Sequence) elements present in each sequence. It takes as input the output list from the “Check the Barcode” program and a list of UAS elements used across all samples (UAS.csv). The output is a list where, for each sequence, the barcode and the order of UAS elements are reported.
