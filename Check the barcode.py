@@ -53,13 +53,14 @@ def bcheck(seq,barcode,outname,outpath):
             x = aligner.align(q,seq_record.seq)
             y = aligner.align(c,seq_record.seq)
 
-            if x[0].score < len(q)-(len(q)/3):
+            if x[0].score < len(q)-(len(q)/10):
                 seq_record = seq_record.reverse_complement()
                 x = aligner.align(q,seq_record.seq)
-                y = aligner.align(c,seq_record.seq, strand="-")
+                y = aligner.align(c,seq_record.seq)
+                #y = aligner.align(c,seq_record.seq, strand="-")
             """ it will check if the fw,rw primer alignment score is great then take the fw,rw sequence an delet it and upstream down stream seq
             https://biopython.org/docs/1.76/api/Bio.Align.html?highlight=aligner#Bio.Align.PairwiseAligner""" 
-            if x[0].score >= len(q)-(len(q)/3) and y[0].score >= len(c)-(len(c)/1.5):
+            if x[0].score >= len(q)-(len(q)/10) and y[0].score >= len(c)-(len(c)/5):
                 check = 1
                 bcheck = copy.deepcopy(seq_record)
 
@@ -67,9 +68,9 @@ def bcheck(seq,barcode,outname,outpath):
                 rr = (x[0].aligned)[1][-1][-1]
                 "find the last position of alignemtn of rw primer"
                 rrr = (y[0].aligned)[1][0][0]
-
+                ext = int(reader[i]['ext'])
                 bcheck.letter_annotations = {}
-                bcheck.seq = seq_record.seq[rr:rrr]
+                bcheck.seq = seq_record.seq[rr+ext:rrr]
                 b = int(reader[i]['num'])
                 bcheck.annotations["barcode number"]= b
                 bcheck.annotations["length"] = "%i bp"%(len(bcheck.seq))
